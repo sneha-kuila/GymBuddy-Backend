@@ -30,6 +30,17 @@ public class Users implements UserDetails {
     private String password;
 
     private String fitnessGoal;
+
+    private Integer age;
+
+    private Integer weight;
+
+    private Integer height;
+
+    private Integer phone;
+
+    private String gender;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -37,7 +48,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override
@@ -60,6 +71,6 @@ public class Users implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
-    // UserDetails methods (same as your evoting project)
+    
 }
 

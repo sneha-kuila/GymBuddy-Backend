@@ -36,8 +36,7 @@ public class SecurityConfiguration {
                         ).permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
-                        // Add more .requestMatchers() for any public endpoints
-                        .anyRequest().authenticated() // Everything else is protected
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
