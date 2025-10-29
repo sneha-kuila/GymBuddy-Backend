@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy.Exception;
+package com.arslan.gymbuddy.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

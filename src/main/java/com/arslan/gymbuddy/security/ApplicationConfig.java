@@ -1,7 +1,6 @@
-package com.arslan.gym_buddy.Security;
+package com.arslan.gymbuddy.security;
 
-
-import com.arslan.gym_buddy.Repository.UserRepository;
+import com.arslan.gymbuddy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 @Configuration
 @RequiredArgsConstructor
-public class  ApplicationConfig {
+public class ApplicationConfig {
 
     private final UserRepository userRepo;
 
@@ -25,14 +23,10 @@ public class  ApplicationConfig {
     public UserDetailsService userDetailsService() {
         return  username -> userRepo.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email " + username + " not found"));
-
-
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -49,4 +43,3 @@ public class  ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 }
-

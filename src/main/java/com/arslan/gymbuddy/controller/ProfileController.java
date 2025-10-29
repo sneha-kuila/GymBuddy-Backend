@@ -1,8 +1,8 @@
-package com.arslan.gym_buddy.Controller;
+package com.arslan.gymbuddy.controller;
 
-import com.arslan.gym_buddy.DTO.UpdateUserDTO;
-import com.arslan.gym_buddy.DTO.UserDTO;
-import com.arslan.gym_buddy.Service.UserService;
+import com.arslan.gymbuddy.dto.UpdateUserDto;
+import com.arslan.gymbuddy.dto.UserDto;
+import com.arslan.gymbuddy.service.UserService;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,21 +20,19 @@ public class ProfileController {
 
     private final UserService userService;
 
-
-
     // Get current user profile
     @GetMapping
     public ResponseEntity<Map<String, Object>> getProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDTO userProfile = userService.getUserProfileByEmail(email);
+        UserDto userProfile = userService.getUserProfileByEmail(email);
         return CustomResponse("User profile fetched successfully", userProfile, HttpStatus.OK);
     }
 
     // Update current user profile
     @PutMapping
-    public ResponseEntity<Map<String, Object>> updateProfile(@RequestBody UpdateUserDTO updateUserDTO) {
+    public ResponseEntity<Map<String, Object>> updateProfile(@RequestBody UpdateUserDto updateUserDto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDTO updatedProfile = userService.updateUserProfile(email, updateUserDTO);
+        UserDto updatedProfile = userService.updateUserProfile(email, updateUserDto);
         return CustomResponse("User profile updated successfully", updatedProfile, HttpStatus.OK);
     }
 
@@ -46,7 +44,6 @@ public class ProfileController {
         SecurityContextHolder.clearContext(); // Logout after delete
         return CustomResponse("User account deleted successfully", null, HttpStatus.OK);
     }
-
 
     private ResponseEntity<Map<String, Object>> CustomResponse(String message, Object data, HttpStatus status) {
         Map<String, Object> body = new HashMap<>();

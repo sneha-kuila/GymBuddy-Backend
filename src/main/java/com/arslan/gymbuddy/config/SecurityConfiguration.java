@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy.Config;
+package com.arslan.gymbuddy.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 @Configuration
 @EnableWebSecurity
@@ -46,4 +45,3 @@ public class SecurityConfiguration {
                 .build();
     }
 }
-

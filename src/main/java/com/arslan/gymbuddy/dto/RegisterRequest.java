@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy.DTO;
+package com.arslan.gymbuddy.dto;
 
 import lombok.*;
 
@@ -12,4 +12,3 @@ public class RegisterRequest {
     private String password;
     private String fitnessGoal; // "WEIGHT_LOSS", "MUSCLE_GAIN", etc.
 }
-

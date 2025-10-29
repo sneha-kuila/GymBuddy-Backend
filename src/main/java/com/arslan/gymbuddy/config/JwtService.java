@@ -1,5 +1,4 @@
-package com.arslan.gym_buddy.Config;
-
+package com.arslan.gymbuddy.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,7 +22,6 @@ import java.util.function.Function;
 public class JwtService {
 
     private static String secretKey= "";
-
 
     public JwtService() {
         try {

@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy;
+package com.arslan.gymbuddy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GymBuddyApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GymBuddyApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(GymBuddyApplication.class, args);
+    }
 }

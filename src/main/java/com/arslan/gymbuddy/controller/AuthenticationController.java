@@ -1,9 +1,9 @@
-package com.arslan.gym_buddy.Controller;
+package com.arslan.gymbuddy.controller;
 
-import com.arslan.gym_buddy.DTO.AuthenticationRequest;
-import com.arslan.gym_buddy.DTO.AuthenticationResponse;
-import com.arslan.gym_buddy.DTO.RegisterRequest;
-import com.arslan.gym_buddy.Security.AuthenticationService;
+import com.arslan.gymbuddy.dto.AuthenticationRequest;
+import com.arslan.gymbuddy.dto.AuthenticationResponse;
+import com.arslan.gymbuddy.dto.RegisterRequest;
+import com.arslan.gymbuddy.security.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,4 +31,3 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }
-

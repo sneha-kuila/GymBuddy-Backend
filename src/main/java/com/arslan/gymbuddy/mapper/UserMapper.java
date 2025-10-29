@@ -1,8 +1,8 @@
-package com.arslan.gym_buddy.Mapper;
+package com.arslan.gymbuddy.mapper;
 
-import com.arslan.gym_buddy.Entity.Users;
-import com.arslan.gym_buddy.DTO.UserDTO;
-import com.arslan.gym_buddy.DTO.UpdateUserDTO;
+import com.arslan.gymbuddy.entity.User;
+import com.arslan.gymbuddy.dto.UserDto;
+import com.arslan.gymbuddy.dto.UpdateUserDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     // Convert entity to DTO
-    public UserDTO toDTO(Users user) {
+    public UserDto toDto(User user) {
         if (user == null) return null;
 
-        UserDTO dto = new UserDTO();
+        UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setFullName(user.getFullName());
         dto.setEmail(user.getEmail());
@@ -27,7 +27,7 @@ public class UserMapper {
     }
 
     // Update entity fields from Update DTO
-    public void updateEntityFromDTO(UpdateUserDTO dto, Users user, PasswordEncoder encoder) {
+    public void updateEntityFromDto(UpdateUserDto dto, User user, PasswordEncoder encoder) {
         if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
             user.setFullName(dto.getFullName());
         }

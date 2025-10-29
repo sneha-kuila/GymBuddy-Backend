@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy.DTO;
+package com.arslan.gymbuddy.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AuthenticationResponse {
     private String token;
-    private String email;
 }

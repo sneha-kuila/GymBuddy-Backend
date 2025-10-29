@@ -1,11 +1,11 @@
-package com.arslan.gym_buddy.Security;
+package com.arslan.gymbuddy.security;
 
-import com.arslan.gym_buddy.Config.JwtService;
-import com.arslan.gym_buddy.DTO.AuthenticationRequest;
-import com.arslan.gym_buddy.DTO.AuthenticationResponse;
-import com.arslan.gym_buddy.DTO.RegisterRequest;
-import com.arslan.gym_buddy.Entity.Users;
-import com.arslan.gym_buddy.Repository.UserRepository;
+import com.arslan.gymbuddy.config.JwtService;
+import com.arslan.gymbuddy.dto.AuthenticationRequest;
+import com.arslan.gymbuddy.dto.AuthenticationResponse;
+import com.arslan.gymbuddy.dto.RegisterRequest;
+import com.arslan.gymbuddy.entity.User;
+import com.arslan.gymbuddy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +22,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = Users.builder()
+        var user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))

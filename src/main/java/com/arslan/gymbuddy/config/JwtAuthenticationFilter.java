@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy.Config;
+package com.arslan.gymbuddy.config;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -32,23 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authorizationHeader = request.getHeader("Authorization");
 
-
         final String token;
         final String userEmail;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
 
-
             userEmail = jwtService.getUserNameFromToken(token);
-            System.out.println("[DEBUG] User email from token: " + userEmail);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                System.out.println("[DEBUG] Loaded UserDetails: " + userDetails);
 
                 if (jwtService.isTokenValid(token, userDetails)) {
-                    System.out.println("[DEBUG] Token is valid. Setting authentication in context.");
                     UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -58,14 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authtoken);
-                } else {
-                    System.out.println("[DEBUG] Token is INVALID!");
                 }
-            } else {
-                System.out.println("[DEBUG] No user email found or authentication already set.");
             }
-        } else {
-            System.out.println("[DEBUG] Authorization header is missing or does not start with 'Bearer '");
         }
 
         filterChain.doFilter(request, response);

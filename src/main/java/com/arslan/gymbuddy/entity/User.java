@@ -1,5 +1,4 @@
-package com.arslan.gym_buddy.Entity;
-
+package com.arslan.gymbuddy.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,15 +8,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Entity
+@Table(name = "users")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Users implements UserDetails {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -70,7 +69,4 @@ public class Users implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
-
-    
 }
-

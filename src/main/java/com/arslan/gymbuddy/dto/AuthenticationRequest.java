@@ -1,4 +1,4 @@
-package com.arslan.gym_buddy.DTO;
+package com.arslan.gymbuddy.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +13,3 @@ public class AuthenticationRequest {
     private String email;
     private String password;
 }
-
-
