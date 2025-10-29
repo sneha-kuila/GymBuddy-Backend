@@ -36,7 +36,7 @@ public class User implements UserDetails {
 
     private Integer height;
 
-    private Integer phone;
+    private String phone;
 
     private String gender;
 

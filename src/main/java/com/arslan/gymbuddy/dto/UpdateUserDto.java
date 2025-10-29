@@ -12,5 +12,5 @@ public class UpdateUserDto {
     private Integer height;
     private String gender;
     private String fitnessGoal;
-    private Integer phone;
+    private String phone;
 }
