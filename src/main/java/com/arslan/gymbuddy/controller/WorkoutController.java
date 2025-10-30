@@ -55,4 +55,25 @@ public class WorkoutController {
         Double total = workoutService.getTotalCaloriesBurned(user.getId(), startDate, endDate);
         return ResponseEntity.ok(Map.of("totalCalories", total));
     }
+
+    @GetMapping("/my-workouts")
+    public ResponseEntity<List<WorkoutDto>> getMyWorkouts(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(workoutService.getUserWorkouts(user.getId()));
+    }
+
+    @PostMapping("/my-workouts/{workoutId}")
+    public ResponseEntity<Void> addWorkoutToMyList(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long workoutId) {
+        workoutService.addWorkoutToUser(user.getId(), workoutId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/my-workouts/{workoutId}")
+    public ResponseEntity<Void> removeWorkoutFromMyList(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long workoutId) {
+        workoutService.removeWorkoutFromUser(user.getId(), workoutId);
+        return ResponseEntity.ok().build();
+    }
 }
