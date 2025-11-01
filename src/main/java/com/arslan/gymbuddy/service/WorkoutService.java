@@ -6,6 +6,7 @@ import com.arslan.gymbuddy.dto.WorkoutSessionDto;
 import com.arslan.gymbuddy.entity.User;
 import com.arslan.gymbuddy.entity.Workout;
 import com.arslan.gymbuddy.entity.WorkoutSession;
+import com.arslan.gymbuddy.repository.UserRepository;
 import com.arslan.gymbuddy.repository.WorkoutRepository;
 import com.arslan.gymbuddy.repository.WorkoutSessionRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class WorkoutService {
     
     private final WorkoutRepository workoutRepository;
     private final WorkoutSessionRepository workoutSessionRepository;
+    private final UserRepository userRepository;
     private final CalorieCalculationService calorieCalculationService;
 
     public List<WorkoutDto> getAllWorkouts() {
@@ -65,6 +67,33 @@ public class WorkoutService {
     public Double getTotalCaloriesBurned(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         Double total = workoutSessionRepository.getTotalCaloriesBurnedByUserAndDateRange(userId, startDate, endDate);
         return total != null ? total : 0.0;
+    }
+
+    public List<WorkoutDto> getUserWorkouts(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getMyWorkouts().stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    @Transactional
+    public void addWorkoutToUser(Long userId, Long workoutId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Workout workout = workoutRepository.findById(workoutId)
+                .orElseThrow(() -> new RuntimeException("Workout not found"));
+        
+        user.getMyWorkouts().add(workout);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeWorkoutFromUser(Long userId, Long workoutId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.getMyWorkouts().removeIf(workout -> workout.getId().equals(workoutId));
+        userRepository.save(user);
     }
 
     private WorkoutDto mapToDto(Workout workout) {

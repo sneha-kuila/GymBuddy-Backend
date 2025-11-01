@@ -22,4 +22,7 @@ public interface WorkoutSessionRepository extends JpaRepository<WorkoutSession, 
     Double getTotalCaloriesBurnedByUserAndDateRange(@Param("userId") Long userId, 
                                                    @Param("startDate") LocalDateTime startDate, 
                                                    @Param("endDate") LocalDateTime endDate);
+    
+    @Query("SELECT DISTINCT ws.workout.id FROM WorkoutSession ws WHERE ws.user.id = :userId")
+    List<Long> findDistinctWorkoutIdsByUserId(@Param("userId") Long userId);
 }
