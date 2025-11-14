@@ -1,6 +1,9 @@
 package com.arslan.gymbuddy.config;
 
-import com.arslan.gymbuddy.exception.UserNotFoundException;
+import com.arslan.gymbuddy.entity.User;
+import com.arslan.gymbuddy.repository.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
     
     @Override
     protected void doFilterInternal(
@@ -33,38 +37,92 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         final String authorizationHeader = request.getHeader("Authorization");
         
-        final String token;
-        final String userEmail;
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
+        final String token = authorizationHeader.substring(7);
+        
+        // If already authenticated, skip
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // 1) Try your own JWT first
+        boolean authenticated = tryAuthenticateWithLocalJwt(token, request);
+        
+        // 2) If that failed, try Firebase ID token
+        if (!authenticated) {
+            tryAuthenticateWithFirebase(token, request);
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+    
+    private boolean tryAuthenticateWithLocalJwt(String token, HttpServletRequest request) {
+        try {
+            String userEmail = jwtService.getUserNameFromToken(token);
             
-            userEmail = jwtService.getUserNameFromToken(token);
+            if (userEmail == null) {
+                return false;
+            }
             
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                try {
-                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                    
-                    if (jwtService.isTokenValid(token, userDetails)) {
-                        UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            
+            if (jwtService.isTokenValid(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
                                 userDetails.getAuthorities()
                         );
-                        authtoken.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request)
-                        );
-                        SecurityContextHolder.getContext().setAuthentication(authtoken);
-                    }
-                } catch (Exception e) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"error\":\"User Not Found\",\"message\":\"User not found with email: " + userEmail + "\"}");
-                    return;
-                }
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+                return true;
             }
+            
+        } catch (Exception ignored) {
+            // If anything goes wrong, just return false and let Firebase try
         }
-        
-        filterChain.doFilter(request, response);
+        return false;
+    }
+    
+    private boolean tryAuthenticateWithFirebase(String token, HttpServletRequest request) {
+        try {
+            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(token);
+            
+            String email = firebaseToken.getEmail();
+            if (email == null) {
+                return false;
+            }
+            
+            String name = (String) firebaseToken.getClaims()
+                    .getOrDefault("name", email);
+            
+            // Find or create local User
+            User user = userRepository.findByEmail(email)
+                    .orElseGet(() -> userRepository.save(
+                            User.builder()
+                                    .email(email)
+                                    .fullName(name)
+                                    .password("")
+                                    .build()
+                    ));
+            
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            user,
+                            null,
+                            user.getAuthorities()
+                    );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            return true;
+            
+        } catch (Exception ignored) {
+        }
+        return false;
     }
 }
