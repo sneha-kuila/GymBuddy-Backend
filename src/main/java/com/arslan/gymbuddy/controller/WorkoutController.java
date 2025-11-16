@@ -76,4 +76,10 @@ public class WorkoutController {
         workoutService.removeWorkoutFromUser(user.getId(), workoutId);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/my-workouts/clear-all")
+    public ResponseEntity<Void> clearAllMyWorkouts(@AuthenticationPrincipal User user) {
+        workoutService.clearAllUserWorkouts(user.getId());
+        return ResponseEntity.ok().build();
+    }
 }

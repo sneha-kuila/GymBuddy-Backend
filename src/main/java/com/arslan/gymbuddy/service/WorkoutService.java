@@ -96,6 +96,14 @@ public class WorkoutService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void clearAllUserWorkouts(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.getMyWorkouts().clear();
+        userRepository.save(user);
+    }
+
     private WorkoutDto mapToDto(Workout workout) {
         return WorkoutDto.builder()
                 .id(workout.getId())
