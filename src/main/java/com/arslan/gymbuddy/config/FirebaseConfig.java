@@ -1,3 +1,4 @@
+
 package com.arslan.gymbuddy.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -5,21 +6,41 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FirebaseConfig {
-    
-    String FIREBASE_SERVICE_ACCOUNT_JSON_PATH = "gym-buddy-1e604-firebase-adminsdk-fbsvc-c491308ec8.json";
-    
+
     @Bean
     public FirebaseApp initializeFirebase() throws IOException {
-        ClassPathResource serviceAccount = new ClassPathResource(FIREBASE_SERVICE_ACCOUNT_JSON_PATH);
+
+        String credentialsJson =
+                System.getenv("FIREBASE_SERVICE_ACCOUNT_JSON");
+
+        if (credentialsJson == null || credentialsJson.isBlank()) {
+            throw new IllegalStateException(
+                    "FIREBASE_SERVICE_ACCOUNT_JSON is not configured"
+            );
+        }
+
+        GoogleCredentials credentials =
+                GoogleCredentials.fromStream(
+                        new ByteArrayInputStream(
+                                credentialsJson.getBytes(StandardCharsets.UTF_8)
+                        )
+                );
+
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
+                .setCredentials(credentials)
                 .build();
-        return FirebaseApp.initializeApp(options);
+
+        if (FirebaseApp.getApps().isEmpty()) {
+            return FirebaseApp.initializeApp(options);
+        }
+
+        return FirebaseApp.getInstance();
     }
 }
