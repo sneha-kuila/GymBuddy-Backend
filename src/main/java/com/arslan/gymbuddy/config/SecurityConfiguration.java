@@ -35,7 +35,9 @@ public class SecurityConfiguration {
 
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
-                "http://127.0.0.1:*"
+                "http://127.0.0.1:*",
+                "https://gymbuddy-local-testing.web.app"
+
         ));
 
         configuration.setAllowedMethods(List.of(
